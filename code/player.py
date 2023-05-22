@@ -7,20 +7,20 @@ class Player(pygame.sprite.Sprite):
 		super().__init__(group)
 
 		self.import_assets()
-		self.status = 'down_axe'
+		self.status = 'down'
 		self.frame_index = 0
 
-		# general setup
+		# Setup Geral
 		self.image = self.animations[self.status][self.frame_index]
 		self.rect = self.image.get_rect(center = pos)
 
-		# movement attributes
+		# Movimentos
 		self.direction = pygame.math.Vector2()
 		self.pos = pygame.math.Vector2(self.rect.center)
 		self.speed = 200
 
 	def import_assets(self):
-		self.animations = {'up': [],'down': [],'left': [],'right': [],
+		self.animations = {'up': [],'down': [],'down_': [],'left': [],'right': [],
 						   'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
 						   'right_hoe':[],'left_hoe':[],'up_hoe':[],'down_hoe':[],
 						   'right_axe':[],'left_axe':[],'up_axe':[],'down_axe':[],
@@ -55,15 +55,15 @@ class Player(pygame.sprite.Sprite):
 
 	def move(self,dt):
 
-		# normalizing a vector 
+		# Normalizando os vetores 
 		if self.direction.magnitude() > 0:
 			self.direction = self.direction.normalize()
 
-		# horizontal movement
+		# Horizontal 
 		self.pos.x += self.direction.x * self.speed * dt
 		self.rect.centerx = self.pos.x
 
-		# vertical movement
+		# Vertical
 		self.pos.y += self.direction.y * self.speed * dt
 		self.rect.centery = self.pos.y
 
