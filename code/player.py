@@ -126,7 +126,7 @@ class Player(pygame.sprite.Sprite):
 			self.status = self.status.split('_')[0] + '_idle'
 		# Ferramentas
 		if self.timers['tool use'].active:
-			self.status = self.status.split('')[0] + '' + self.selected_tool
+			self.status = self.status.split('_')[0] + '_' + self.selected_tool
 		
 	def update_timers(self):
 		for timer in self.timers.values():
