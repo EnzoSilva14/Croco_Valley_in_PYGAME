@@ -4,7 +4,7 @@ from support import *
 from timer import Timer
 
 class Player(pygame.sprite.Sprite):
-	def __init__(self, pos, group):
+	def __init__(self, pos, group, collision_sprites):
 		super().__init__(group)
 
 		self.import_assets()
@@ -37,6 +37,10 @@ class Player(pygame.sprite.Sprite):
 		self.seeds = ['corn', 'tomato']
 		self.seed_index = 0
 		self.selected_seed = self.seeds[self.seed_index]
+
+		# Colisão
+		self.hitbox = self.rect.copy().inflate((-126,-70))
+		self.collision_sprites = collision_sprites
 
 	def use_tool(self):
 		#print(self.selected_tool)
@@ -140,11 +144,15 @@ class Player(pygame.sprite.Sprite):
 
 		# Horizontal 
 		self.pos.x += self.direction.x * self.speed * dt
-		self.rect.centerx = self.pos.x
+		self.hitbox.centerx = round(self.pos.x)
+		self.rect.centerx = self.hitbox.centerx
+		self.collision('horizontal')
 
 		# Vertical
 		self.pos.y += self.direction.y * self.speed * dt
-		self.rect.centery = self.pos.y
+		self.hitbox.centery = round(self.pos.y)
+		self.rect.centery = self.hitbox.centery
+		self.collision('vertical')
 
 	def update(self, dt):
 		self.input()
