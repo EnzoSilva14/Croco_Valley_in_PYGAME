@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
 		# Setup Geral
 		self.image = self.animations[self.status][self.frame_index]
 		self.rect = self.image.get_rect(center = pos)
-
+		self.z = LAYERS['main']
 		# Movimentos
 		self.direction = pygame.math.Vector2()
 		self.pos = pygame.math.Vector2(self.rect.center)
@@ -118,9 +118,7 @@ class Player(pygame.sprite.Sprite):
 				else:
 					self.seed_index = 0
 				self.selected_seed = self.seeds[self.seed_index]
-
-
-				
+			
 	def get_status(self):
 		#Se o jogador não está se movendo
 		#Adicionar _iddle no status
@@ -128,7 +126,7 @@ class Player(pygame.sprite.Sprite):
 			self.status = self.status.split('_')[0] + '_idle'
 		# Ferramentas
 		if self.timers['tool use'].active:
-			self.status = self.status.split('_')[0] + '_' + self.selected_tool
+			self.status = self.status.split('')[0] + '' + self.selected_tool
 		
 	def update_timers(self):
 		for timer in self.timers.values():
