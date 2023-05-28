@@ -28,6 +28,7 @@ class Level:
 
 		for layer in ['HouseWalls', 'HouseFurnitureTop']:
 			for x,y ,surf in tmx_data.get_layer_by_name(layer).tiles():
+
 				Generic((x*TILE_SIZE,y*TILE_SIZE),surf,self.all_sprites)
 		
 		#Cerca
@@ -37,7 +38,7 @@ class Level:
 		#Água
 		water_frames = import_folder('../graphics/water')
 		for x,y, surf in tmx_data.get_layer_by_name('Water').tiles():
-			Water((x*TILE_SIZE,y*TILE_SIZE), surf, self.all_sprites)
+			Water((x*TILE_SIZE,y*TILE_SIZE), water_frames, self.all_sprites)
 
 		#Árvores
 		for obj in tmx_data.get_layer_by_name('Trees'):
@@ -46,14 +47,7 @@ class Level:
 		#Girassol
 		for obj in tmx_data.get_layer_by_name('Decoration'):
 			WildFlower((obj.x, obj.y), obj.image, [self.all_sprites, self.collision_sprites])
-
-		self.player = Player((640,360), self.all_sprites)
-		Generic( 
-			pos = (0,0),
-			surf = pygame.image.load('../graphics/world/ground.png').convert_alpha(),
-			groups = self.all_sprites,
-			z =	LAYERS['ground'])
-
+		
 		#Paredes de Colisão
 		for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():
 			Generic((x * TILE_SIZE, y * TILE_SIZE), pygame.Surface((TILE_SIZE, TILE_SIZE)), self.collision_sprites)

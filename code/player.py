@@ -15,10 +15,15 @@ class Player(pygame.sprite.Sprite):
 		self.image = self.animations[self.status][self.frame_index]
 		self.rect = self.image.get_rect(center = pos)
 		self.z = LAYERS['main']
+		
 		# Movimentos
 		self.direction = pygame.math.Vector2()
 		self.pos = pygame.math.Vector2(self.rect.center)
 		self.speed = 200
+
+		# Colisão
+		self.hitbox = self.rect.copy().inflate((-126,-70))
+		self.collision_sprites = collision_sprites
 
 		#Timers
 		self.timers = {
@@ -38,9 +43,7 @@ class Player(pygame.sprite.Sprite):
 		self.seed_index = 0
 		self.selected_seed = self.seeds[self.seed_index]
 
-		# Colisão
-		self.hitbox = self.rect.copy().inflate((-126,-70))
-		self.collision_sprites = collision_sprites
+
 
 	def use_tool(self):
 		#print(self.selected_tool)
@@ -110,7 +113,6 @@ class Player(pygame.sprite.Sprite):
 				self.timers['seed use'].activate()
 				self.direction = pygame.math.Vector2()
 				self.frame_index = 0
-				print(self.selected_seed)
 
 			#Trocando de semente
 			if keys[pygame.K_e] and not self.timers['seed switch'].active:
@@ -136,6 +138,26 @@ class Player(pygame.sprite.Sprite):
 		for timer in self.timers.values():
 			timer.update()
 
+	def collision(self, direction):
+		for sprite in self.collision_sprites.sprites():
+			if hasattr(sprite, 'hitbox'):
+				if sprite.hitbox.colliderect(self.hitbox):
+					if direction == 'horizontal':
+						if self.direction.x > 0: # moving right
+							self.hitbox.right = sprite.hitbox.left
+						if self.direction.x < 0: # moving left
+							self.hitbox.left = sprite.hitbox.right
+						self.rect.centerx = self.hitbox.centerx
+						self.pos.x = self.hitbox.centerx
+
+					if direction == 'vertical':
+						if self.direction.y > 0: # moving down
+							self.hitbox.bottom = sprite.hitbox.top
+						if self.direction.y < 0: # moving up
+							self.hitbox.top = sprite.hitbox.bottom
+						self.rect.centery = self.hitbox.centery
+						self.pos.y = self.hitbox.centery
+
 	def move(self,dt):
 
 		# Normalizando os vetores 
@@ -158,5 +180,6 @@ class Player(pygame.sprite.Sprite):
 		self.input()
 		self.get_status()
 		self.update_timers()
+
 		self.move(dt)
 		self.animate(dt)
