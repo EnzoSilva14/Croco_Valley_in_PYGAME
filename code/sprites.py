@@ -1,3 +1,4 @@
+from typing import Any
 import pygame
 from settings import *
 from random import randint, choice  
@@ -35,7 +36,7 @@ class Water(Generic):
 class WildFlower(Generic):
     def __init__(self, pos, surf, groups):
         super().__init__(pos, surf, groups)
-        self.hitbox = self.rect.copy().inflate(-20,-self.rect.height * 0.9)
+        self.hitbox = self.rect.copy().inflate(-10,-self.rect.height * 0.9)
 
 class Tree(Generic):
     def __init__(self, pos, surf, groups, name):
@@ -62,8 +63,17 @@ class Tree(Generic):
         if len(self.apple_sprites.sprites()) > 0:
             random_apple = choice(self.apple_sprites.sprites())
             random_apple.kill()
-        
+    
+    def check_death(self):
+        if self.health <= 0:
+            self.image = self.stump_surf
+            self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
+            self.hitbox = self.rect.copy().inflate(-20,-self.rect.height * 0.6)
+            self.alive = False
 
+    def update(self, dt):
+        if self.alive:
+            self.check_death()
     def create_fruit (self):
         for pos in self.apple_pos:
             if randint(0, 10) < 2:

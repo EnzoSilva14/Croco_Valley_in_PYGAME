@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
 		self.speed = 200
 
 		# Colisão
-		self.hitbox = self.rect.copy().inflate((-126,-70))
+		self.hitbox = self.rect.copy().inflate((-66, -50))
 		self.collision_sprites = collision_sprites
 
 		#Timers
