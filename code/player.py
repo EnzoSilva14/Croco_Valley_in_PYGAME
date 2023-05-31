@@ -4,7 +4,7 @@ from support import *
 from timer import Timer
 
 class Player(pygame.sprite.Sprite):
-	def __init__(self, pos, group, collision_sprites, tree_sprites, interaction):
+	def __init__(self, pos, group, collision_sprites, tree_sprites, interaction, soil_layer):
 		super().__init__(group)
 
 		self.import_assets()
@@ -55,15 +55,16 @@ class Player(pygame.sprite.Sprite):
 		self.tree_sprites = tree_sprites
 		self.interaction = interaction
 		self.sleep = False
+		self.soil_layer = soil_layer
 
 		
 
 
 
 	def use_tool(self):
-		print('tool_use')
+		# print('tool_use')
 		if self.selected_tool == 'hoe':
-			pass
+			self.soil_layer.get_hit(self.target_pos)
 		if self.selected_tool == 'axe':
 			for tree in self.tree_sprites.sprites():
 				if tree.rect.collidepoint(self.target_pos):
@@ -76,9 +77,10 @@ class Player(pygame.sprite.Sprite):
 		self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
 
 	def use_seed(self):
-		if self.seed_inventory[self.selected_seed] > 0:
-			self.soil_layer.plant_seed(self.target_pos,self.selected_seed)
-			self.seed_inventory[self.selected_seed] -= 1
+		pass
+		# if self.seed_inventory[self.selected_seed] > 0:
+		# 	self.soil_layer.plant_seed(self.target_pos,self.selected_seed)
+		# 	self.seed_inventory[self.selected_seed] -= 1
 			
 	def import_assets(self):
 		self.animations = {'up': [],'down': [],'left': [],'right': [],
