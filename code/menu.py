@@ -5,13 +5,13 @@ from timer import Timer
 class Menu:
 	def __init__(self, player, toggle_menu):
 
-		# general setup
+		# Setup Geral
 		self.player = player
 		self.toggle_menu = toggle_menu
 		self.display_surface = pygame.display.get_surface()
 		self.font = pygame.font.Font('../font/LycheeSoda.ttf', 30)
 
-		# options
+		# Opções
 		self.width = 400
 		self.space = 10
 		self.padding = 8
