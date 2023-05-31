@@ -50,3 +50,9 @@ PURCHASE_PRICES = {
 	'corn': 4,
 	'tomato': 5
 }
+
+# Estados para controle do fluxo da aplicação
+INIT1 = 0
+INIT2 = 1
+GAME = 2
+QUIT = 3
