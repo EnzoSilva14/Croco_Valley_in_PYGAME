@@ -57,20 +57,18 @@ class Player(pygame.sprite.Sprite):
 		self.sleep = False
 		self.soil_layer = soil_layer
 
-		
-
-
-
 	def use_tool(self):
 		# print('tool_use')
 		if self.selected_tool == 'hoe':
 			self.soil_layer.get_hit(self.target_pos)
+		
 		if self.selected_tool == 'axe':
 			for tree in self.tree_sprites.sprites():
 				if tree.rect.collidepoint(self.target_pos):
 					tree.damage()
+		
 		if self.selected_tool == 'water':
-			pass
+			self.soil_layer.water(self.target_pos)
 
 	def get_target_pos(self):
 

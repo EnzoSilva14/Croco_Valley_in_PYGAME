@@ -95,6 +95,8 @@ class Level:
 
 		self.player.item_inventory[item] += 1
 	def reset(self):
+		#solo
+		self.soil_layer.remove_water()
 		#maçãs nas árvores
 		for tree in self.tree_sprites.sprites():
 			for apple in tree.apple_sprites.sprites():
