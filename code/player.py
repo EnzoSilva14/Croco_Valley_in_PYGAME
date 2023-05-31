@@ -75,10 +75,8 @@ class Player(pygame.sprite.Sprite):
 		self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
 
 	def use_seed(self):
-		pass
-		# if self.seed_inventory[self.selected_seed] > 0:
-		# 	self.soil_layer.plant_seed(self.target_pos,self.selected_seed)
-		# 	self.seed_inventory[self.selected_seed] -= 1
+
+		self.soil_layer.plant_seed(self.target_pos, self.selected_seed)
 			
 	def import_assets(self):
 		self.animations = {'up': [],'down': [],'left': [],'right': [],
@@ -149,10 +147,11 @@ class Player(pygame.sprite.Sprite):
 				self.seed_index += 1
 				self.seed_index = self.seed_index if self.seed_index < len(self.seeds) else 0
 				self.selected_seed = self.seeds[self.seed_index]
+			
 			if keys[pygame.K_RETURN]:
 				collided_interaction_sprite = pygame.sprite.spritecollide(self,self.interaction,False)
 				if collided_interaction_sprite:
-					if collided_interaction_sprite[0].name ==  'Trader':
+					if collided_interaction_sprite[0].name == 'Trader':
 						pass
 					else:
 						self.status = 'left_idle'
@@ -160,7 +159,6 @@ class Player(pygame.sprite.Sprite):
 			
 	def get_status(self):
 		#Se o jogador não está se movendo
-		#Adicionar _iddle no status
 		if self.direction.magnitude() == 0:
 			self.status = self.status.split('_')[0] + '_idle'
 		# Ferramentas
@@ -176,17 +174,17 @@ class Player(pygame.sprite.Sprite):
 			if hasattr(sprite, 'hitbox'):
 				if sprite.hitbox.colliderect(self.hitbox):
 					if direction == 'horizontal':
-						if self.direction.x > 0: # moving right
+						if self.direction.x > 0: # direita
 							self.hitbox.right = sprite.hitbox.left
-						if self.direction.x < 0: # moving left
+						if self.direction.x < 0: # esquerda
 							self.hitbox.left = sprite.hitbox.right
 						self.rect.centerx = self.hitbox.centerx
 						self.pos.x = self.hitbox.centerx
 
 					if direction == 'vertical':
-						if self.direction.y > 0: # moving down
+						if self.direction.y > 0: # baixo
 							self.hitbox.bottom = sprite.hitbox.top
-						if self.direction.y < 0: # moving up
+						if self.direction.y < 0: # cima
 							self.hitbox.top = sprite.hitbox.bottom
 						self.rect.centery = self.hitbox.centery
 						self.pos.y = self.hitbox.centery

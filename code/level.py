@@ -7,6 +7,9 @@ from pytmx.util_pygame import load_pygame
 from support import *
 from transition import Transition
 from soil import SoilLayer
+from sky import Rain
+from random import randint
+
 
 
 class Level:
@@ -20,52 +23,56 @@ class Level:
 		self.collision_sprites = pygame.sprite.Group()
 		self.tree_sprites = pygame.sprite.Group()
 		self.interaction_sprites = pygame.sprite.Group()
-		self.soil_layer = SoilLayer(self.all_sprites)
+
+		self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
 		self.setup()
 		self.overlay = Overlay(self.player)
 		self.transition = Transition(self.reset, self.player)
 		
+		#Céu
+		self.rain = Rain(self.all_sprites)
+		self.raining = randint(0,10) > 3
+		self.soil_layer.raining = self.raining
 		
 	def setup(self):
 		tmx_data = load_pygame('../data/map.tmx')
 
-		#Casa
+		# Casa 
 		for layer in ['HouseFloor', 'HouseFurnitureBottom']:
-			for x,y ,surf in tmx_data.get_layer_by_name(layer).tiles():
-				Generic((x*TILE_SIZE,y*TILE_SIZE),surf,self.all_sprites,LAYERS['house bottom'])
+			for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+				Generic((x * TILE_SIZE,y * TILE_SIZE), surf, self.all_sprites, LAYERS['house bottom'])
 
 		for layer in ['HouseWalls', 'HouseFurnitureTop']:
-			for x,y ,surf in tmx_data.get_layer_by_name(layer).tiles():
+			for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+				Generic((x * TILE_SIZE,y * TILE_SIZE), surf, self.all_sprites)
 
-				Generic((x*TILE_SIZE,y*TILE_SIZE),surf,self.all_sprites)
-		
-		#Cerca
-		for x,y, surf in tmx_data.get_layer_by_name('Fence').tiles():
-			Generic((x*TILE_SIZE,y*TILE_SIZE), surf, [self.all_sprites, self.collision_sprites])
-		
-		#Água
+		# Cerca
+		for x, y, surf in tmx_data.get_layer_by_name('Fence').tiles():
+			Generic((x * TILE_SIZE,y * TILE_SIZE), surf, [self.all_sprites, self.collision_sprites])
+
+		# Água 
 		water_frames = import_folder('../graphics/water')
-		for x,y, surf in tmx_data.get_layer_by_name('Water').tiles():
-			Water((x*TILE_SIZE,y*TILE_SIZE), water_frames, self.all_sprites)
+		for x, y, surf in tmx_data.get_layer_by_name('Water').tiles():
+			Water((x * TILE_SIZE,y * TILE_SIZE), water_frames, self.all_sprites)
 
-		#Árvores
+		# Árvores 
 		for obj in tmx_data.get_layer_by_name('Trees'):
 			Tree(
 				pos = (obj.x, obj.y), 
-				surf = obj.image,
+				surf = obj.image, 
 				groups = [self.all_sprites, self.collision_sprites, self.tree_sprites], 
 				name = obj.name,
 				player_add = self.player_add)
- 
-		#Girassol
+
+		# Girassóis 
 		for obj in tmx_data.get_layer_by_name('Decoration'):
 			WildFlower((obj.x, obj.y), obj.image, [self.all_sprites, self.collision_sprites])
-		
-		#Paredes de Colisão
+
+		# Barreiras
 		for x, y, surf in tmx_data.get_layer_by_name('Collision').tiles():
 			Generic((x * TILE_SIZE, y * TILE_SIZE), pygame.Surface((TILE_SIZE, TILE_SIZE)), self.collision_sprites)
 
-		# Player 
+		# Jogador 
 		for obj in tmx_data.get_layer_by_name('Player'):
 			if obj.name == 'Start':
 				self.player = Player(
@@ -75,15 +82,10 @@ class Level:
 					tree_sprites = self.tree_sprites,
 					interaction = self.interaction_sprites,
 					soil_layer = self.soil_layer)
-				
+			
 			if obj.name == 'Bed':
-				Interaction((obj.x,obj.y),(obj.width, obj.height), self.interaction_sprites, obj.name)
-				# self.player = Player(
-				# 	pos = (obj.x,obj.y), 
-				# 	group = self.all_sprites, 
-				# 	collision_sprites = self.collision_sprites,
-				# 	tree_sprites = self.tree_sprites)
-				
+				Interaction((obj.x,obj.y), (obj.width,obj.height), self.interaction_sprites, obj.name)
+
 
 		Generic(
 			pos = (0,0),
@@ -95,9 +97,17 @@ class Level:
 
 		self.player.item_inventory[item] += 1
 	def reset(self):
-		#solo
+		# PLantas
+		self.soil_layer.update_plants()
+
+		# Solo
 		self.soil_layer.remove_water()
-		#maçãs nas árvores
+		self.raining = randint(0,10) > 3
+		self.soil_layer.raining = self.raining
+		if self.raining:
+			self.soil_layer.water_all()
+
+		# Maçãs 
 		for tree in self.tree_sprites.sprites():
 			for apple in tree.apple_sprites.sprites():
 				apple.kill()
@@ -105,16 +115,18 @@ class Level:
 
 	def run(self,dt):
 		self.display_surface.fill('black')
-		# self.all_sprites.draw(self.display_surface)
 		self.all_sprites.customize_draw(self.player)
 		self.all_sprites.update(dt)
 
 		self.overlay.display()
 
+		# Chuva
+		if self.raining:
+			self.rain.update()
+
+		# Transição de tela
 		if self.player.sleep:
 			self.transition.play()
-
-		# print(self.player.item_inventory)
 
 class CameraGroup(pygame.sprite.Group):
 	def __init__(self):
