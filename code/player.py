@@ -1,3 +1,4 @@
+from sprites import *
 import pygame
 from settings import *
 from support import *
