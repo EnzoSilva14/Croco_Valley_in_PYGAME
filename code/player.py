@@ -1,11 +1,10 @@
-from sprites import *
 import pygame
 from settings import *
 from support import *
 from timer import Timer
 
 class Player(pygame.sprite.Sprite):
-	def __init__(self, pos, group, collision_sprites, tree_sprites):
+	def __init__(self, pos, group, collision_sprites, tree_sprites, interaction):
 		super().__init__(group)
 
 		self.import_assets()
@@ -44,18 +43,20 @@ class Player(pygame.sprite.Sprite):
 		self.seed_index = 0
 		self.selected_seed = self.seeds[self.seed_index]
 
-		#Inventário
-
+		#Inventario
 		self.item_inventory = {
-			'wood' :  0,
-			'apple' : 0,
-			'corn' :  0,
-			'tomato' :0,
+			'wood':   0,
+			'apple':  0,
+			'corn':   0,
+			'tomato': 0
 		}
 
 		#Interações
-
 		self.tree_sprites = tree_sprites
+		self.interaction = interaction
+		self.sleepFalse = False
+
+		
 
 
 
@@ -75,7 +76,9 @@ class Player(pygame.sprite.Sprite):
 		self.target_pos = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
 
 	def use_seed(self):
-		zero = 0
+		if self.seed_inventory[self.selected_seed] > 0:
+			self.soil_layer.plant_seed(self.target_pos,self.selected_seed)
+			self.seed_inventory[self.selected_seed] -= 1
 			
 	def import_assets(self):
 		self.animations = {'up': [],'down': [],'left': [],'right': [],
@@ -97,7 +100,7 @@ class Player(pygame.sprite.Sprite):
 	def input(self):
 		keys = pygame.key.get_pressed()
 
-		if not self.timers['tool use'].active:
+		if not self.timers['tool use'].active and not self.sleep:
 
 			# Direções
 			if keys[pygame.K_UP]:
@@ -143,13 +146,17 @@ class Player(pygame.sprite.Sprite):
 			#Trocando de semente
 			if keys[pygame.K_e] and not self.timers['seed switch'].active:
 				self.timers['seed switch'].activate()
-
 				self.seed_index += 1
-				if self.seed_index < len(self.seeds):
-					self.seed_index = self.seed_index
-				else:
-					self.seed_index = 0
+				self.seed_index = self.seed_index if self.seed_index < len(self.seeds) else 0
 				self.selected_seed = self.seeds[self.seed_index]
+			if keys[pygame.K_RETURN]:
+				collided_interaction_sprite = pygame.sprite.spritecollide(self,self.interaction,False)
+				if collided_interaction_sprite:
+					if collided_interaction_sprite[0].name ==  'Trader':
+						pass
+					else:
+						self.status = 'left_idle'
+						self.sleep = True
 			
 	def get_status(self):
 		#Se o jogador não está se movendo
