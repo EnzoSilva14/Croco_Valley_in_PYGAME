@@ -22,6 +22,7 @@ class Game:
 		self.state = INIT1
 
 	def init_screen(self):
+		print('Entrou no init')
 		while self.loop:
 			# ----- Trata eventos
 			for event in pygame.event.get():
@@ -52,7 +53,7 @@ class Game:
 					pygame.quit()
 					self.state = QUIT
 
-			self.screen.blit(self.window_manual, self.screen_rect)
+			self.screen.blit(self.window_init,(640,360))
 			pygame.display.update()
 		self.loop = True
 		return self.state
@@ -68,14 +69,31 @@ class Game:
 			self.level.run(dt)  
 			pygame.display.update()
 
-		self.loop = True
-		return self.state
+		# self.loop = True
+		# return self.state
+	
+	def rodar(self):
+		JOG = True
+		while JOG: 
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					pygame.quit()
+					sys.exit()
+				if event.type == pygame.KEYDOWN:
+					print("jogo")
+					JOG = False
+			self.screen.blit(self.window_init, self.screen_rect)
+			dt = self.clock.tick() / 1000
+			# self.level.run(dt)  
+			pygame.display.update()
+
 	
 	def main():
 		game = Game()
 		state = INIT1
-
+		print('Chamando')
 		while True:
+			print(state)
 			if state == INIT1:
 				state = game.init_screen()
 			elif state == INIT2:
@@ -86,4 +104,5 @@ class Game:
 				break
 if __name__== '__main__':
 	game = Game()
+	game.rodar()
 	game.run()
