@@ -6,6 +6,7 @@ class Game:
 	def __init__(self):
 		pygame.init()
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+		self.screen_rect = self.screen.get_rect()
 		pygame.display.set_caption('Croco Valley')
 		self.clock = pygame.time.Clock()
 		self.level = Level()
@@ -13,9 +14,9 @@ class Game:
 		self.loop = True
 
 		#janelas
-		self.window_init = pygame.image.load('..graphics/assets/tela_inicial_presskey.png').convert_alpha()
-		self.window_end = pygame.image.load('assets/game_over_presskey.png').convert_alpha()
-		self.window_manual = pygame.image.load('assets/como_jogar.png').convert_alpha()
+		self.window_init = pygame.image.load('assets/valley.png').convert_alpha()
+		self.window_end = pygame.image.load('assets/play.png').convert_alpha()
+		self.window_manual = pygame.image.load('assets/croc.png').convert_alpha()
 
 		
 		self.state = INIT1
@@ -55,17 +56,34 @@ class Game:
 			pygame.display.update()
 		self.loop = True
 		return self.state
+
 	def run(self):
 		while True: 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
-  
+
 			dt = self.clock.tick() / 1000
 			self.level.run(dt)  
 			pygame.display.update()
 
+		self.loop = True
+		return self.state
+	
+	def main():
+		game = Game()
+		state = INIT1
+
+		while True:
+			if state == INIT1:
+				state = game.init_screen()
+			elif state == INIT2:
+				state = game.manual_screen()
+			elif state == GAME:
+				state = game.run()
+			elif state == QUIT:
+				break
 if __name__== '__main__':
 	game = Game()
 	game.run()
