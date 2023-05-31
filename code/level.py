@@ -18,7 +18,7 @@ class Level:
 		self.all_sprites = CameraGroup()
 		self.collision_sprites = pygame.sprite.Group()
 		self.tree_sprites = pygame.sprite.Group()
-		self.interaction_sprites = pygame.sprites.Group()
+		self.interaction_sprites = pygame.sprite.Group()
 		self.setup()
 		self.overlay = Overlay(self.player)
 		self.transition = Transition(self.reset, self.player)
