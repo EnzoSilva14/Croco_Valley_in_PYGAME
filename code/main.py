@@ -14,9 +14,9 @@ class Game:
 		self.loop = True
 
 		#janelas
-		self.window_init = pygame.image.load('assets/valley.png').convert_alpha()
-		self.window_end = pygame.image.load('assets/play.png').convert_alpha()
-		self.window_manual = pygame.image.load('assets/croc.png').convert_alpha()
+		self.window_init = pygame.image.load('../assets/valley.png').convert_alpha()
+		self.window_end = pygame.image.load('../assets/play.png').convert_alpha()
+		self.window_manual = pygame.image.load('../assets/croc.png').convert_alpha()
 
 		
 		self.state = INIT1
