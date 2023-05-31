@@ -71,13 +71,14 @@ class Level:
 					collision_sprites = self.collision_sprites,
 					tree_sprites = self.tree_sprites,
 					interaction = self.interaction_sprites)
+				
 			if obj.name == 'Bed':
-				Interaction((obj.x,obj.y),(obj.width,obj.height), self.interaction_sprites, obj.name)
-				self.player = Player(
-					pos = (obj.x,obj.y), 
-					group = self.all_sprites, 
-					collision_sprites = self.collision_sprites,
-					tree_sprites = self.tree_sprites)
+				Interaction((obj.x,obj.y),(obj.width, obj.height), self.interaction_sprites, obj.name)
+				# self.player = Player(
+				# 	pos = (obj.x,obj.y), 
+				# 	group = self.all_sprites, 
+				# 	collision_sprites = self.collision_sprites,
+				# 	tree_sprites = self.tree_sprites)
 				
 
 		Generic(

@@ -54,7 +54,7 @@ class Player(pygame.sprite.Sprite):
 		#Interações
 		self.tree_sprites = tree_sprites
 		self.interaction = interaction
-		self.sleepFalse = False
+		self.sleep = False
 
 		
 
