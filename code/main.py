@@ -16,7 +16,7 @@ class Game:
 		#janelas
 		self.window_init = pygame.image.load('../assets/valley.png').convert_alpha()
 		self.window_end = pygame.image.load('../assets/play.png').convert_alpha()
-		self.window_manual = pygame.image.load('../assets/croc.png').convert_alpha()
+		self.window_manual = pygame.image.load('../assets/jogadas.png').convert_alpha()
 
 		
 		self.state = INIT1
@@ -53,7 +53,7 @@ class Game:
 					pygame.quit()
 					self.state = QUIT
 
-			self.screen.blit(self.window_init,(640,360))
+			self.screen.blit(self.window_init,(0,0))
 			pygame.display.update()
 		self.loop = True
 		return self.state
@@ -73,7 +73,7 @@ class Game:
 		# return self.state
 	
 	def rodar(self):
-		JOG = True
+		JOG =True
 		while JOG: 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -83,7 +83,7 @@ class Game:
 					print("jogo")
 					JOG = False
 			self.screen.blit(self.window_init, self.screen_rect)
-			dt = self.clock.tick() / 1000
+			# dt = self.clock.tick() / 1000
 			# self.level.run(dt)  
 			pygame.display.update()
 
