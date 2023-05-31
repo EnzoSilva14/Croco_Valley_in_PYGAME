@@ -10,6 +10,51 @@ class Game:
 		self.clock = pygame.time.Clock()
 		self.level = Level()
 		
+		self.loop = True
+
+		#janelas
+		self.window_init = pygame.image.load('..graphics/assets/tela_inicial_presskey.png').convert_alpha()
+		self.window_end = pygame.image.load('assets/game_over_presskey.png').convert_alpha()
+		self.window_manual = pygame.image.load('assets/como_jogar.png').convert_alpha()
+
+		
+		self.state = INIT1
+
+	def init_screen(self):
+		while self.loop:
+			# ----- Trata eventos
+			for event in pygame.event.get():
+				# ----- Verifica consequências
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_RETURN:
+						self.state = INIT2
+						self.loop = False
+				if event.type == pygame.QUIT:
+					pygame.quit()
+					self.state = QUIT
+
+			self.screen.blit(self.window_init, self.screen_rect)
+			pygame.display.update()
+		self.loop = True
+		return self.state
+	
+	def manual_screen(self):
+		while self.loop:
+			# ----- Trata eventos
+			for event in pygame.event.get():
+				# ----- Verifica consequências
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_RETURN:
+						self.state = GAME
+						self.loop = False
+				if event.type == pygame.QUIT:
+					pygame.quit()
+					self.state = QUIT
+
+			self.screen.blit(self.window_manual, self.screen_rect)
+			pygame.display.update()
+		self.loop = True
+		return self.state
 	def run(self):
 		while True: 
 			for event in pygame.event.get():
